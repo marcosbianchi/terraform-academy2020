@@ -7,6 +7,7 @@ terraform {
   }
 }
 
+
 provider "aws" {
   region = "us-east-1"
 }
@@ -14,6 +15,7 @@ provider "aws" {
 # vpc
 resource "aws_vpc" "mb_vpc_tf" {
   cidr_block = "10.0.0.0/16"
+
   tags = {
     name = "mb_vpc_tf"
     User = "marcos.bianchi"
@@ -24,6 +26,14 @@ resource "aws_internet_gateway" "mb_igw_terraform" {
   vpc_id = aws_vpc.mb_vpc_tf.id
   tags = {
     User = "marcos.bianchi"
+  }
+}
+
+resource "aws_route_table" "mb_route_table_terraform" {
+  vpc_id = aws_vpc.mb_vpc_tf.id
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.mb_igw_terraform.id
   }
 }
 
@@ -47,6 +57,17 @@ resource "aws_subnet" "mb_subnet_az2_tf" {
     name = "mb_subnet_az2_tf"
     User = "marcos.bianchi"
   }
+}
+
+# route association
+resource "aws_route_table_association" "mb_rt_assoc_subnet1_tf" {
+  subnet_id = aws_subnet.mb_subnet_az1_tf.id
+  route_table_id = aws_route_table.mb_route_table_terraform.id
+}
+
+resource "aws_route_table_association" "mb_rt_assoc_subnet2_tf" {
+  subnet_id = aws_subnet.mb_subnet_az2_tf.id
+  route_table_id = aws_route_table.mb_route_table_terraform.id
 }
 
 # security group
@@ -153,3 +174,23 @@ resource "aws_instance" "mb_ec2_instance2_tf" {
     User = "marcos.bianchi"
   }
 }
+
+resource "aws_launch_configuration" "mb_launch_config_terraform" {
+  name = "mb_launch_config_terraform"
+  image_id = "ami-04d29b6f966df1537"
+  instance_type = "t2.micro"
+
+  key_name = "mb-keys"
+  associate_public_ip_address = true
+  security_groups = [aws_security_group.mb_sg_tf.id]
+  user_data = "IyEvYmluL2Jhc2gKeXVtIGluc3RhbGwgaHR0cGQgLXkKc3lzdGVtY3RsIHN0YXJ0IGh0dHBkCnN5c3RlbWN0bCBzdG9wIGZpcmV3YWxsZApzdWRvIGVjaG8gIkhlbGxvIFdvcmxkIGZyb20gJChob3N0bmFtZSAtZikiID4gL3Zhci93d3cvaHRtbC9pbmRleC5odG1s"
+}
+
+resource "aws_autoscaling_group" "mb_as_group_terraform" {
+  name = "mb_as_group_terraform"
+  vpc_zone_identifier = [aws_subnet.mb_subnet_az1_tf.id, aws_subnet.mb_subnet_az2_tf.id]
+  launch_configuration = aws_launch_configuration.mb_launch_config_terraform.id
+  max_size = 4
+  min_size = 2
+}
+
