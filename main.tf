@@ -35,6 +35,9 @@ resource "aws_route_table" "mb_route_table_terraform" {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.mb_igw_terraform.id
   }
+  tags = {
+    name = "mb_route_table_terraform"
+  }
 }
 
 # subnet for AZ-2  us-east-1a
@@ -179,11 +182,10 @@ resource "aws_launch_configuration" "mb_launch_config_terraform" {
   name = "mb_launch_config_terraform"
   image_id = "ami-04d29b6f966df1537"
   instance_type = "t2.micro"
-
   key_name = "mb-keys"
   associate_public_ip_address = true
   security_groups = [aws_security_group.mb_sg_tf.id]
-  user_data = "IyEvYmluL2Jhc2gKeXVtIGluc3RhbGwgaHR0cGQgLXkKc3lzdGVtY3RsIHN0YXJ0IGh0dHBkCnN5c3RlbWN0bCBzdG9wIGZpcmV3YWxsZApzdWRvIGVjaG8gIkhlbGxvIFdvcmxkIGZyb20gJChob3N0bmFtZSAtZikiID4gL3Zhci93d3cvaHRtbC9pbmRleC5odG1s"
+  user_data_base64 = "IyEvYmluL2Jhc2gKeXVtIGluc3RhbGwgaHR0cGQgLXkKc3lzdGVtY3RsIHN0YXJ0IGh0dHBkCnN5c3RlbWN0bCBzdG9wIGZpcmV3YWxsZApzdWRvIGVjaG8gIkhlbGxvIFdvcmxkIGZyb20gJChob3N0bmFtZSAtZikiID4gL3Zhci93d3cvaHRtbC9pbmRleC5odG1s"
 }
 
 resource "aws_autoscaling_group" "mb_as_group_terraform" {
@@ -192,5 +194,11 @@ resource "aws_autoscaling_group" "mb_as_group_terraform" {
   launch_configuration = aws_launch_configuration.mb_launch_config_terraform.id
   max_size = 4
   min_size = 2
+  target_group_arns = [aws_alb_target_group.mb-alb-target-group-terraform.arn]
+  tag {
+    key = "User"
+    propagate_at_launch = true
+    value = "marcos.bianchi"
+  }
 }
 
