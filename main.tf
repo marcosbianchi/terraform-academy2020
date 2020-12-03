@@ -46,7 +46,7 @@ resource "aws_subnet" "mb_subnet_az1_tf" {
   vpc_id     = aws_vpc.mb_vpc_tf.id
   availability_zone = "us-east-1a"
   tags = {
-    name = "mb_subnet_az1_tf"
+    Name = "mb_subnet_az1_tf"
     User = "marcos.bianchi"
   }
 }
@@ -57,7 +57,7 @@ resource "aws_subnet" "mb_subnet_az2_tf" {
   vpc_id     = aws_vpc.mb_vpc_tf.id
   availability_zone = "us-east-1b"
   tags = {
-    name = "mb_subnet_az2_tf"
+    Name = "mb_subnet_az2_tf"
     User = "marcos.bianchi"
   }
 }
