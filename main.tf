@@ -15,7 +15,6 @@ provider "aws" {
 # vpc
 resource "aws_vpc" "mb_vpc_tf" {
   cidr_block = "10.0.0.0/16"
-
   tags = {
     name = "mb_vpc_tf"
     User = "marcos.bianchi"
@@ -185,7 +184,7 @@ resource "aws_launch_configuration" "mb_launch_config_terraform" {
   key_name = "mb-keys"
   associate_public_ip_address = true
   security_groups = [aws_security_group.mb_sg_tf.id]
-  user_data_base64 = "IyEvYmluL2Jhc2gKeXVtIGluc3RhbGwgaHR0cGQgLXkKc3lzdGVtY3RsIHN0YXJ0IGh0dHBkCnN5c3RlbWN0bCBzdG9wIGZpcmV3YWxsZApzdWRvIGVjaG8gIkhlbGxvIFdvcmxkIGZyb20gJChob3N0bmFtZSAtZikiID4gL3Zhci93d3cvaHRtbC9pbmRleC5odG1s"
+  user_data_base64 = "IyEvYmluL2Jhc2gKeXVtIGluc3RhbGwgaHR0cGQgLXkKc3lzdGVtY3RsIHN0YXJ0IGh0dHBkCnN5c3RlbWN0bCBzdG9wIGZpcmV3YWxsZApzdWRvIGVjaG8gIkhlbGxvIFdvcmxkIGZyb20gJChob3N0bmFtZSAtZikgICBBWjogJCh3Z2V0IC1xIC1PIC0gaHR0cDovLzE2OS4yNTQuMTY5LjI1NC9sYXRlc3QvbWV0YS1kYXRhL3BsYWNlbWVudC9hdmFpbGFiaWxpdHktem9uZSkiICA+IC92YXIvd3d3L2h0bWwvaW5kZXguaHRtbA=="
 }
 
 resource "aws_autoscaling_group" "mb_as_group_terraform" {
