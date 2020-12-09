@@ -1,1 +1,1 @@
-#This is the development branch of the terraform project
+#This is the QA branch of the terraform project
